@@ -52,7 +52,7 @@
     [super viewDidLoad];
     self.needShowStatusBar = ![UIApplication sharedApplication].statusBarHidden;
     self.view.backgroundColor = [UIColor whiteColor];
-    self.navigationBar.barStyle = UIBarStyleBlack;
+    //self.navigationBar.barStyle = UIBarStyleBlack;    //不要强行指定为黑屏模式
     self.navigationBar.translucent = YES;
     [TZImageManager manager].shouldFixOrientation = NO;
 
@@ -65,8 +65,7 @@
     self.navigationBar.tintColor = [UIColor whiteColor];
     self.automaticallyAdjustsScrollViewInsets = NO;
     if (self.needShowStatusBar) [UIApplication sharedApplication].statusBarHidden = NO;
-    
-    [self updateNavigationBgColor];
+
 }
 
 - (void)setNaviBgColor:(UIColor *)naviBgColor {
@@ -703,61 +702,6 @@
     if (self.imagePickerControllerDidCancelHandle) {
         self.imagePickerControllerDidCancelHandle();
     }
-}
-
-- (void) updateNavigationBgColor {
-    if (@available(iOS 12.0, *)) {
-        if(self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {   //黑屏
-            [self setNaviBgColor:[self colorWithHexString:@"008066"]];
-        } else {
-            [self setNaviBgColor:[self colorWithHexString:@"1ab394"]];
-        }
-    } else {
-        [self setNaviBgColor:[self colorWithHexString:@"1ab394"]];
-    }
-}
-
-#pragma mark - 暗黑模式切换
-- (void) traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
-    if (@available(iOS 12.0, *)) {
-        if (self.traitCollection.userInterfaceStyle != previousTraitCollection.userInterfaceStyle) {
-            [self updateNavigationBgColor];
-        }
-    }
-}
-
-- (UIColor *)colorWithHexString:(NSString *)hexString {
-    
-    NSString *cString = [[hexString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];
-    
-    // String should be 6 or 8 characters
-    if ([cString length] < 6) {
-        return [UIColor clearColor];
-    }
-    // 判断前缀
-    if ([cString hasPrefix:@"0X"])
-        cString = [cString substringFromIndex:2];
-    if ([cString hasPrefix:@"#"])
-        cString = [cString substringFromIndex:1];
-    if ([cString length] != 6)
-        return [UIColor clearColor];
-    // 从六位数值中找到RGB对应的位数并转换
-    NSRange range;
-    range.location = 0;
-    range.length = 2;
-    //R、G、B
-    NSString *rString = [cString substringWithRange:range];
-    range.location = 2;
-    NSString *gString = [cString substringWithRange:range];
-    range.location = 4;
-    NSString *bString = [cString substringWithRange:range];
-    // Scan values
-    unsigned int r, g, b;
-    [[NSScanner scannerWithString:rString] scanHexInt:&r];
-    [[NSScanner scannerWithString:gString] scanHexInt:&g];
-    [[NSScanner scannerWithString:bString] scanHexInt:&b];
-    
-    return [UIColor colorWithRed:((float) r / 255.0f) green:((float) g / 255.0f) blue:((float) b / 255.0f) alpha:1.0f];
 }
 
 @end
